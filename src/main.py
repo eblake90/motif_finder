@@ -1,7 +1,5 @@
 from Bio import SeqIO
 from collections import defaultdict
-import random
-from tqdm import tqdm
 
 # Function to calculate the Hamming distance (number of differing characters) between two strings
 def hamming_distance(s1, s2):
@@ -58,70 +56,11 @@ def create_probability_matrix(sequences, motif):
 
     return matrix  # Return the probability matrix
 
-def mutate(kmer):
-    position = random.randint(0, len(kmer) - 1)
-    nucleotides = ['A', 'T', 'C', 'G']
-    nucleotides.remove(kmer[position])
-    kmer = list(kmer)
-    kmer[position] = random.choice(nucleotides)
-    return ''.join(kmer)
-
-def evolutionary_motif_search(sequences, k=10, population_size=100, num_iterations=1000):
-    # Initialization
-    population = [random.choice(seq[i:i+k]) for seq in sequences for i in range(len(seq) - k + 1)]
-    population = random.sample(population, population_size)
-
-    best_kmer = None
-    best_fitness = float('-inf')
-
-    for iteration in tqdm(range(num_iterations), desc="Searching Motifs"):
-        # Fitness Calculation
-        fitness_scores = [calculate_fitness(kmer, sequences) for kmer in population]
-
-        # Check for the best k-mer in this iteration
-        for i, kmer in enumerate(population):
-            if fitness_scores[i] > best_fitness:
-                best_fitness = fitness_scores[i]
-                best_kmer = kmer
-
-        # Selection
-        selected_kmers = select_top_kmers(population, fitness_scores, 10)
-
-        # Mutation
-        mutated_kmers = [mutate(kmer) for kmer in selected_kmers]
-
-        # Update Population
-        population = mutated_kmers + random.sample(population, population_size - len(mutated_kmers))
-
-    # Return the best k-mer
-    return best_kmer
-
-# Implement the fitness function and selection function
-def calculate_fitness(kmer, sequences):
-    total_distance = 0
-    for seq in sequences:
-        min_distance = min(hamming_distance(kmer, seq[i:i+len(kmer)]) for i in range(len(seq) - len(kmer) + 1))
-        total_distance += min_distance
-    average_distance = total_distance / len(sequences)
-    fitness = 1 / (1 + average_distance)  # Higher fitness for lower average distance
-    return fitness
-
-def select_top_kmers(population, fitness_scores, number):
-    # Pair each k-mer with its fitness score
-    paired_kmers = list(zip(population, fitness_scores))
-    # Sort the k-mers based on fitness scores
-    sorted_kmers = sorted(paired_kmers, key=lambda x: x[1], reverse=True)
-    # Select the top 'number' k-mers
-    top_kmers = [kmer for kmer, score in sorted_kmers[:number]]
-    return top_kmers
-
-
-
 
 
 # Main code
 # Read sequences from a FASTA file
-sequences = [str(record.seq) for record in SeqIO.parse("reads_motif.fa", "fasta")]
+sequences = [str(record.seq) for record in SeqIO.parse("data/reads_motif.fa", "fasta")]
 
 # Find the most frequent motif in these sequences
 motif, count = find_most_frequent_motif(sequences)
@@ -133,8 +72,3 @@ print("Probability Matrix:")
 # Print the probability matrix
 for base, probabilities in probability_matrix.items():
     print(f"{base}: {['{:.4f}'.format(p) for p in probabilities]}")
-
-
-# Use the function on your sequences
-best_motif = evolutionary_motif_search(sequences)
-print(f"Identified Motif: {best_motif}")
