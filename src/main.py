@@ -3,8 +3,8 @@ from collections import defaultdict
 
 # Function to calculate the Hamming distance (number of differing characters) between two strings
 def hamming_distance(s1, s2):
-    if len(s1) != len(s2):  # Check if the strings are of the same length
-        raise ValueError("Strings must be of the same length")  # Raise an error if they are not
+    if len(s1) != len(s2):
+        raise ValueError("Strings must be of the same length")
     return sum(ch1 != ch2 for ch1, ch2 in zip(s1, s2))  # Count the number of differences
 
 # Function to find the most frequently occurring motif of a given length in a list of sequences
