@@ -31,8 +31,8 @@ def mutate_motif(motif):
     return motif[:mutation_site] + new_base + motif[mutation_site + 1:]  # Return the motif with the mutated base
 
 def simulated_annealing(sequences, temperature_range, cooling_rate):
-    current_temp = temperature_range[0]  # Set the initial temperature
-    final_temp = temperature_range[1]  # Set the final temperature
+    current_temp = temperature_range[0]
+    final_temp = temperature_range[1]
 
     current_motif = get_random_motif(random.choice(sequences))  # Get a random motif from a random sequence
     current_score = score_motif(current_motif, sequences)  # Score the current motif
