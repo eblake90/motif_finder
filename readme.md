@@ -21,13 +21,14 @@ The following section helps you get up and running with the project.
    git clone https://github.com/eblake90/motif_finder
    ```
 2. Install conda environment
-   ```sh
+3. ```sh
      conda activate motif_finder
    ```
 ### Running
 
 ```shell
 cd src/ && python main.py
+cd src/ && python simulated_annealing.py
 ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
